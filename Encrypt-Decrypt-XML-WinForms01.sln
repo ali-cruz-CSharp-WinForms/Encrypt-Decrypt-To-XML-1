@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32802.440
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt-Decrypt-XML-WinForms01", "Encrypt-Decrypt-XML-WinForms01.csproj", "{A8C72850-2F40-4090-9A62-F384D03A9E4B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8C72850-2F40-4090-9A62-F384D03A9E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8C72850-2F40-4090-9A62-F384D03A9E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8C72850-2F40-4090-9A62-F384D03A9E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8C72850-2F40-4090-9A62-F384D03A9E4B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {861F7A3C-1E6F-4B10-987D-E7B577617D80}
+	EndGlobalSection
+EndGlobal
