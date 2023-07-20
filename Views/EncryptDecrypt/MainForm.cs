@@ -17,14 +17,14 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
     {
         private string pathFile = string.Empty;
         //private string pathFileToCreate = string.Empty;
-        private readonly string keyToEncry = "f4f56r412";
+        //private readonly string keyToEncry = "f4f56r412";
 
 
         public MainForm()
         {
             InitializeComponent();
-            BtnDesencriptar.Enabled = false;
-            BtnEncriptar.Enabled = false;
+            //BtnDesencriptar.Enabled = false;
+            //BtnEncriptar.Enabled = false;
         }
 
         private void BtnOpenXmlFile_Click(object sender, EventArgs e)
@@ -37,23 +37,23 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
                 string passwordValue = GetPasswordValueFromXml(pathFile);
                 LblPasswordInXml.Text = passwordValue;
 
-                if (IsPasswordValueEncrypted(passwordValue))
-                {
-                    BtnEncriptar.Enabled = false;
-                    BtnDesencriptar.Enabled = true;
-                } else
-                {
-                    BtnEncriptar.Enabled = true;
-                    BtnDesencriptar.Enabled = false;
-                }
+                //if (IsPasswordValueEncrypted(passwordValue))
+                //{
+                //    BtnEncriptar.Enabled = false;
+                //    BtnDesencriptar.Enabled = true;
+                //} else
+                //{
+                //    BtnEncriptar.Enabled = true;
+                //    BtnDesencriptar.Enabled = false;
+                //}
 
                 FillTreeView(pathFile);
                 FillWebBrowser(pathFile);
 
             } else
             {
-                BtnDesencriptar.Enabled = false;
-                BtnEncriptar.Enabled = false;
+                //BtnDesencriptar.Enabled = false;
+                //BtnEncriptar.Enabled = false;
                 MessageBox.Show("El archivo seleccionado no existe o se encuentra protegido contra lectura.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -125,24 +125,32 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
 
         private void BtnDesencriptar_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(pathFile))
+            {
+                MessageBox.Show("Seleccione un archivo XML a revisar");
+                return;
+            }
+
             Core.EncryptDecrypt encryptDecrypt = new Core.EncryptDecrypt();
             string valueOfPasswordOfXml = GetPasswordValueFromXml(pathFile);
+            string valueOfSaltOfXml = GetSaltValueFromXml(pathFile);
 
-            string decriptedData = encryptDecrypt.DecryptString(valueOfPasswordOfXml, keyToEncry);
+            string decriptedData = encryptDecrypt.DecryptString(valueOfPasswordOfXml, valueOfSaltOfXml);
+            LblPasswordInXml.Text = valueOfPasswordOfXml;
 
             if (SavePasswordValueOnXml(pathFile, decriptedData))
             {
                 MessageBox.Show("Desencriptado y guardado correctamente.", "Desencriptado",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-                BtnDesencriptar.Enabled = false;
-                BtnEncriptar.Enabled = true;
+                //BtnDesencriptar.Enabled = false;
+                //BtnEncriptar.Enabled = true;
             }
             else
             {
                 MessageBox.Show("Error al intentar desencriptar la cadena recibida.", "No desencriptado",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                BtnDesencriptar.Enabled = true;
-                BtnEncriptar.Enabled = false;
+                //BtnDesencriptar.Enabled = true;
+                //BtnEncriptar.Enabled = false;
             }
 
             FillTreeView(pathFile);
@@ -169,8 +177,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
                     MessageBox.Show("XML guardado correctamente.", "Guardado con exito",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    BtnDesencriptar.Enabled = false;
-                    BtnEncriptar.Enabled = false;
+                    //BtnDesencriptar.Enabled = false;
+                    //BtnEncriptar.Enabled = false;
                     TxbPathXmlSelected.Text = string.Empty;
                     LblPasswordInXml.Text = string.Empty;
                 } else
@@ -180,7 +188,7 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
                 }               
             } else
             {
-                MessageBox.Show("Falta que especifique una conrtaseña.", "Error de validación.",
+                MessageBox.Show("Falta que especifique una contraseña.", "Error de validación.",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 LblNameXmlGenerated.Text = string.Empty;
             }
@@ -272,8 +280,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
                 writerXml.WriteStartElement("Server");
 
                 // Write first sub child element
-                writerXml.WriteStartElement("User");
-                writerXml.WriteString("user1");
+                writerXml.WriteStartElement("Salt");
+                writerXml.WriteString(TxbSalt.Text.Trim());
                 writerXml.WriteEndElement();
 
                 // write second sub child element
@@ -297,22 +305,33 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
         // Encrypt string from xml and save the new encrypted string on xml file.
         private void BtnEncriptar_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(pathFile))
+            {
+                MessageBox.Show("Seleccione primeramente un archivo xml");
+                return;
+            }
             Core.EncryptDecrypt encryptDecrypt = new Core.EncryptDecrypt();
-            
+
             // Get value of password node and encrypt
-            string dataEncrypted = encryptDecrypt.EncryptString(GetPasswordValueFromXml(pathFile), keyToEncry);
+            LblPasswordInXml.Text = GetPasswordValueFromXml(pathFile);
+
+            string dataSaltPlain = GetSaltValueFromXml(pathFile);
+            string dataPasswordEncrypted = encryptDecrypt.EncryptString(GetPasswordValueFromXml(pathFile), dataSaltPlain);
+            bool isSavedPass = SavePasswordValueOnXml(pathFile, dataPasswordEncrypted);
+            bool isSavedSalt = SaveSaltValueOnXml(pathFile, dataSaltPlain);
             
-            if (SavePasswordValueOnXml(pathFile, dataEncrypted))
+
+            if (isSavedPass && isSavedSalt)
             {
                 MessageBox.Show("Encriptado y guardado correctamente.", "Encriptado correctamente",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-                BtnEncriptar.Enabled = false;
-                BtnDesencriptar.Enabled = true;
+                //BtnEncriptar.Enabled = false;
+                //BtnDesencriptar.Enabled = true;
             } else
             {
                 MessageBox.Show("Error al intentar encriptar la cadena recibida. No se guardó.", "No Encriptado",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                BtnEncriptar.Enabled = true;
+                //BtnEncriptar.Enabled = true;
             }
 
             FillTreeView(pathFile);
@@ -336,6 +355,23 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             }
         }
 
+        // Get value of Salt node whether encrypted or decrypted
+        private string GetSaltValueFromXml(string pathXml)
+        {
+            // Load encrypted configuration file
+            XmlDocument xmlDoc = new XmlDocument();
+
+            try
+            {
+                xmlDoc.Load(pathXml);
+                return xmlDoc.SelectSingleNode("//Salt").InnerText;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         // Saves the received password whether encrypted or decrypted
         private bool SavePasswordValueOnXml(string pathXml, string passwordValue)
         {
@@ -346,6 +382,28 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             {
                 doc.Load(pathXml);
                 doc.SelectSingleNode("//Password").InnerText = passwordValue;
+
+                // Save decrypted configuration file
+                doc.Save(pathXml);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        // Saves the salt whether encrypted or decrypted
+        private bool SaveSaltValueOnXml(string pathXml, string saltValue)
+        {
+            // xmlDoc to hold xml file
+            XmlDocument doc = new XmlDocument();
+
+            try
+            {
+                doc.Load(pathXml);
+                doc.SelectSingleNode("//Salt").InnerText = saltValue;
 
                 // Save decrypted configuration file
                 doc.Save(pathXml);

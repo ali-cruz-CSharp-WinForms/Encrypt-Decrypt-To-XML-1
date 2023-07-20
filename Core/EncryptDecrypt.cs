@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Encrypt_Decrypt_XML_WinForms01.Core
@@ -78,6 +79,12 @@ namespace Encrypt_Decrypt_XML_WinForms01.Core
         // Decrypt string file
         public string DecryptString(string encryptedDataString, string key)
         {
+            if (!IsBase64String(encryptedDataString))
+            {
+                MessageBox.Show("No es base 64");
+                return encryptedDataString;
+            }
+
             byte[] encryptedData = Convert.FromBase64String(encryptedDataString);
             byte[] decryptedData = ProtectedData.Unprotect(encryptedData,
                 Encoding.Unicode.GetBytes(key), DataProtectionScope.CurrentUser);
@@ -85,6 +92,23 @@ namespace Encrypt_Decrypt_XML_WinForms01.Core
 
             return decryptedDataString;
         }
+
+
+        // Check if is base64
+        private bool IsBase64String(string str)
+        {
+            try
+            {
+                //byte[] data = Convert.From
+                Convert.FromBase64String(str);
+                return true;
+            } catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                return false;
+            }
+        }
+
 
     }
 }
