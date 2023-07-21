@@ -10,6 +10,77 @@ namespace Encrypt_Decrypt_XML_WinForms01.Core
 {
     public class EncryptDecryptAnyPc
     {
+        // El numero de iteraciones para PBKDF2, valor mas alto es mas seguro
+        // pero requiere mas poder de procesamiento
+        private const int Iterations = 10000;
+        // Tamaño clave en bits (AES-256)
+        private const int KeySize = 256;
+
+        public static string GenerateHash(string password)
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] salt = GenerateSalt();
+            string saltBase64 = Convert.ToBase64String(salt);
+
+            using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(passwordBytes, salt, Iterations))
+            {
+                pbkdf2.IterationCount = Iterations;
+                
+                // Se divide en 8 para obtener el tamaño en bytes
+                byte[] hash = pbkdf2.GetBytes(KeySize / 8);
+
+                // Combinar salt y hash para almacernarlos juntos
+                byte[] combinedSaltHash = new byte[salt.Length + hash.Length];
+                Buffer.BlockCopy(salt, 0, combinedSaltHash, 0, salt.Length);
+                Buffer.BlockCopy(hash, 0, combinedSaltHash, salt.Length, hash.Length);
+
+                string hashB64 = Convert.ToBase64String(combinedSaltHash);
+                return hashB64;
+            }
+        }
+
+        // Comparar Hashes password guardado contra nuevo password proporcionado
+        // Este salt se generó y guardo al momento de crear el hash para el password originalmente
+        public static bool GenerateHash(string password, string salt, string hashOriginalPassword)
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] decodedSalt = Convert.FromBase64String(salt);
+            string newHash = string.Empty;
+
+            using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(passwordBytes, decodedSalt, Iterations))
+            {
+                pbkdf2.IterationCount = Iterations;
+
+                // Se divide en 8 para obtener el tamaño en bytes
+                byte[] hash = pbkdf2.GetBytes(KeySize / 8);
+
+                // Combinar salt y hash para almacernarlos juntos
+                byte[] combinedSaltHash = new byte[salt.Length + hash.Length];
+                Buffer.BlockCopy(decodedSalt, 0, combinedSaltHash, 0, decodedSalt.Length);
+                Buffer.BlockCopy(hash, 0, combinedSaltHash, decodedSalt.Length, hash.Length);
+
+                newHash = Convert.ToBase64String(combinedSaltHash);
+            }
+
+            return hashOriginalPassword == newHash;
+        }
+
+
+        private static byte[] GenerateSalt()
+        {
+            byte[] salt = new byte[16];
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+
+            return salt;
+        }
+
+
+
+
+
         // A
 
         private const string EncryptionKey = "Pass";

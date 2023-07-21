@@ -33,6 +33,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TxbSalt = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.BtnGeneraXml = new System.Windows.Forms.Button();
             this.LblNameXmlGenerated = new System.Windows.Forms.Label();
             this.TxbPassword = new System.Windows.Forms.TextBox();
@@ -40,6 +42,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.label1 = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.BtnDesencriptar2 = new System.Windows.Forms.Button();
+            this.BtnEncriptar2 = new System.Windows.Forms.Button();
             this.LblPasswordInXml = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.BtnDesencriptar = new System.Windows.Forms.Button();
@@ -47,8 +51,6 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.BtnEncriptar = new System.Windows.Forms.Button();
             this.BtnOpenXmlFile = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.TxbSalt = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -126,15 +128,33 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Crear XML";
             // 
+            // TxbSalt
+            // 
+            this.TxbSalt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TxbSalt.Location = new System.Drawing.Point(133, 55);
+            this.TxbSalt.Name = "TxbSalt";
+            this.TxbSalt.Size = new System.Drawing.Size(374, 20);
+            this.TxbSalt.TabIndex = 2;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(94, 58);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(25, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Salt";
+            // 
             // BtnGeneraXml
             // 
             this.BtnGeneraXml.Location = new System.Drawing.Point(394, 109);
             this.BtnGeneraXml.Name = "BtnGeneraXml";
             this.BtnGeneraXml.Size = new System.Drawing.Size(113, 36);
-            this.BtnGeneraXml.TabIndex = 8;
+            this.BtnGeneraXml.TabIndex = 3;
             this.BtnGeneraXml.Text = "Genera XML";
             this.BtnGeneraXml.UseVisualStyleBackColor = true;
-            this.BtnGeneraXml.Click += new System.EventHandler(this.BtnGeneraXml_Click);
+            this.BtnGeneraXml.Click += new System.EventHandler(this.BtnGeneraXml_Click_1);
             // 
             // LblNameXmlGenerated
             // 
@@ -190,6 +210,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.BtnDesencriptar2);
+            this.groupBox2.Controls.Add(this.BtnEncriptar2);
             this.groupBox2.Controls.Add(this.LblPasswordInXml);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.BtnDesencriptar);
@@ -202,6 +224,25 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Abrir XML";
+            // 
+            // BtnDesencriptar2
+            // 
+            this.BtnDesencriptar2.Location = new System.Drawing.Point(287, 117);
+            this.BtnDesencriptar2.Name = "BtnDesencriptar2";
+            this.BtnDesencriptar2.Size = new System.Drawing.Size(113, 36);
+            this.BtnDesencriptar2.TabIndex = 14;
+            this.BtnDesencriptar2.Text = "Desencriptar (2)";
+            this.BtnDesencriptar2.UseVisualStyleBackColor = true;
+            // 
+            // BtnEncriptar2
+            // 
+            this.BtnEncriptar2.Location = new System.Drawing.Point(406, 118);
+            this.BtnEncriptar2.Name = "BtnEncriptar2";
+            this.BtnEncriptar2.Size = new System.Drawing.Size(113, 36);
+            this.BtnEncriptar2.TabIndex = 15;
+            this.BtnEncriptar2.Text = "Encriptar (2)";
+            this.BtnEncriptar2.UseVisualStyleBackColor = true;
+            this.BtnEncriptar2.Click += new System.EventHandler(this.BtnEncriptar2_Click);
             // 
             // LblPasswordInXml
             // 
@@ -225,13 +266,13 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             // 
             // BtnDesencriptar
             // 
-            this.BtnDesencriptar.Location = new System.Drawing.Point(158, 110);
+            this.BtnDesencriptar.Location = new System.Drawing.Point(5, 118);
             this.BtnDesencriptar.Name = "BtnDesencriptar";
             this.BtnDesencriptar.Size = new System.Drawing.Size(113, 36);
             this.BtnDesencriptar.TabIndex = 0;
-            this.BtnDesencriptar.Text = "Desencriptar";
+            this.BtnDesencriptar.Text = "Desencriptar (1)";
             this.BtnDesencriptar.UseVisualStyleBackColor = true;
-            this.BtnDesencriptar.Click += new System.EventHandler(this.BtnDesencriptar_Click);
+            this.BtnDesencriptar.Click += new System.EventHandler(this.BtnDesencriptar_Click_1);
             // 
             // TxbPathXmlSelected
             // 
@@ -244,11 +285,11 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             // 
             // BtnEncriptar
             // 
-            this.BtnEncriptar.Location = new System.Drawing.Point(397, 110);
+            this.BtnEncriptar.Location = new System.Drawing.Point(124, 119);
             this.BtnEncriptar.Name = "BtnEncriptar";
             this.BtnEncriptar.Size = new System.Drawing.Size(113, 36);
             this.BtnEncriptar.TabIndex = 1;
-            this.BtnEncriptar.Text = "Encriptar";
+            this.BtnEncriptar.Text = "Encriptar (1)";
             this.BtnEncriptar.UseVisualStyleBackColor = true;
             this.BtnEncriptar.Click += new System.EventHandler(this.BtnEncriptar_Click);
             // 
@@ -271,24 +312,6 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(522, 281);
             this.treeView1.TabIndex = 0;
-            // 
-            // TxbSalt
-            // 
-            this.TxbSalt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TxbSalt.Location = new System.Drawing.Point(133, 55);
-            this.TxbSalt.Name = "TxbSalt";
-            this.TxbSalt.Size = new System.Drawing.Size(374, 20);
-            this.TxbSalt.TabIndex = 13;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(94, 58);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(25, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Salt";
             // 
             // MainForm
             // 
@@ -331,5 +354,7 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox TxbSalt;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button BtnDesencriptar2;
+        private System.Windows.Forms.Button BtnEncriptar2;
     }
 }
