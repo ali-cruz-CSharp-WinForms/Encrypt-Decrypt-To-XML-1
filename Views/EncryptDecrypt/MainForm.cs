@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -309,17 +310,22 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
             {
                 MessageBox.Show("Seleccione primeramente un archivo xml");
                 return;
-            }
-            Core.EncryptDecrypt encryptDecrypt = new Core.EncryptDecrypt();
+            }            
 
-            // Get value of password node and encrypt
+            // Get value of password node and encrypt            
+            byte[] dataBytesPass = Encoding.UTF8.GetBytes(GetPasswordValueFromXml(pathFile));
             LblPasswordInXml.Text = GetPasswordValueFromXml(pathFile);
 
-            string dataSaltPlain = GetSaltValueFromXml(pathFile);
-            string dataPasswordEncrypted = encryptDecrypt.EncryptString(GetPasswordValueFromXml(pathFile), dataSaltPlain);
-            bool isSavedPass = SavePasswordValueOnXml(pathFile, dataPasswordEncrypted);
-            bool isSavedSalt = SaveSaltValueOnXml(pathFile, dataSaltPlain);
-            
+            // Salt random
+            byte[] salt = GenerateRandomIV();
+            byte[] encryptedPassData = EncryptDecryptAnyPc.EncryptData(dataBytesPass, salt);
+
+            byte[] decryptedPassData = EncryptDecryptAnyPc.EncryptData(encryptedPassData, salt);
+            string decryptedPassDataS = Encoding.UTF8.GetString(decryptedPassData);
+            string saltS = Encoding.UTF8.GetString(salt);
+
+            bool isSavedPass = SavePasswordValueOnXml(pathFile, decryptedPassDataS);
+            bool isSavedSalt = SaveSaltValueOnXml(pathFile, saltS);            
 
             if (isSavedPass && isSavedSalt)
             {
@@ -336,6 +342,34 @@ namespace Encrypt_Decrypt_XML_WinForms01.Views.EncryptDecrypt
 
             FillTreeView(pathFile);
             FillWebBrowser(pathFile);
+        }
+
+        // password
+
+        public static string EncryptPassword(string password)
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] salt = GenerateRandomIV();
+            byte[] encryptedPassword = EncryptDecryptAnyPc.EncryptData(passwordBytes, salt);
+
+            // Combina el salt y la contraseña encriptada para guardarlos juntos.
+            byte[] combinedData = new byte[salt.Length + encryptedPassword.Length];
+            Buffer.BlockCopy(salt, 0, combinedData, 0, salt.Length);
+            Buffer.BlockCopy(encryptedPassword, 0, combinedData, salt.Length, encryptedPassword.Length);
+
+            // Devuelve la contraseña encriptada y el salt combinados como un string en Base64.
+            return Convert.ToBase64String(combinedData);
+        }
+
+
+
+        public static byte[] GenerateRandomIV()
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.GenerateIV();
+                return aes.IV;
+            }
         }
 
         // Get value of Password node whether encrypted or decrypted

@@ -69,8 +69,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Core
         public string EncryptString(string decryptedDataString, string key)
         {
             // Encrypt sensitive data            
-            byte[] encryptedData = ProtectedData.Protect(Encoding.Unicode.GetBytes(decryptedDataString),
-                Encoding.Unicode.GetBytes(key), DataProtectionScope.CurrentUser);
+            byte[] encryptedData = ProtectedData.Protect(Encoding.UTF8.GetBytes(decryptedDataString),
+                Encoding.Unicode.GetBytes(key), DataProtectionScope.LocalMachine);
             string encryptedDataString = Convert.ToBase64String(encryptedData);
 
             return encryptedDataString;
@@ -87,8 +87,8 @@ namespace Encrypt_Decrypt_XML_WinForms01.Core
 
             byte[] encryptedData = Convert.FromBase64String(encryptedDataString);
             byte[] decryptedData = ProtectedData.Unprotect(encryptedData,
-                Encoding.Unicode.GetBytes(key), DataProtectionScope.CurrentUser);
-            string decryptedDataString = Encoding.Unicode.GetString(decryptedData);
+                Encoding.Unicode.GetBytes(key), DataProtectionScope.LocalMachine);
+            string decryptedDataString = Encoding.UTF8.GetString(decryptedData);
 
             return decryptedDataString;
         }
